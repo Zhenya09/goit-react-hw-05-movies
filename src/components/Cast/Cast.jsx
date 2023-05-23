@@ -14,29 +14,42 @@ import {
 const Cast = () => {
   const { movieId } = useParams();
   const [cast, setCast] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCast = async () => {
+      setIsLoading(true);
+
       try {
         const { cast } = await fetchMovieCast(movieId);
         setCast(cast);
+        setIsLoading(false);
       } catch (error) {
-        console.log(error);
+        setError(error);
+        setIsLoading(false);
       }
     };
 
     fetchCast();
   }, [movieId]);
 
+  if (isLoading) {
+    return <div>Loading cast...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <Wrapper>
       <CastHeader>Cast</CastHeader>
 
-      {cast.length ? (
+      {cast.length > 0 ? (
         <CastList>
           {cast.map(actor => (
             <CastListItem className="cast-card" key={actor.id}>
-
               {actor.profile_path ? (
                 <img
                   src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
@@ -66,4 +79,3 @@ const Cast = () => {
 };
 
 export default Cast;
-

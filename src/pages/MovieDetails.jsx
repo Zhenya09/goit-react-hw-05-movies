@@ -11,24 +11,35 @@ const MovieDelails = () => {
   const { movieId } = useParams();
   const location = useLocation();
   const [selectedMovie, setSelectedMovie] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSelectedMovie = async movieId => {
       try {
         const movieData = await fetchMovieById(movieId);
         setSelectedMovie(movieData);
+        setIsLoading(false);
       } catch (error) {
-        console.log(error);
+        setError(error);
+        setIsLoading(false);
       }
     };
 
     fetchSelectedMovie(movieId);
   }, [movieId]);
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <main>
       <Container>
-
         <Link to={location?.state?.from ?? '/'}>
           <Button type="button">
             <BsArrowLeftShort

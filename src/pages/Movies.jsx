@@ -15,12 +15,16 @@ const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const query = searchParams.get('query') ?? '';
     if (!query) return;
 
     const getMovie = async () => {
+      setIsLoading(true);
+
       try {
         const { results } = await fetchMovieByName(query);
 
@@ -32,17 +36,28 @@ const Movies = () => {
           setMovies(results);
         }
       } catch (error) {
+        setError(error);
         toast.error(error.message);
         setMovies([]);
       }
+
+      setIsLoading(false);
     };
 
-      getMovie();
+    getMovie();
   }, [searchParams]);
 
   const handleSubmit = query => {
     setSearchParams({ query });
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <main>
@@ -54,7 +69,6 @@ const Movies = () => {
         <List>
           {movies.map(movie => (
             <ListItem key={movie.id}>
-
               <StyledLink to={`/movies/${movie.id}`} state={{ from: location }}>
                 {movie.title}
               </StyledLink>
@@ -67,4 +81,3 @@ const Movies = () => {
 };
 
 export default Movies;
-

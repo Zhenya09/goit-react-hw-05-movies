@@ -9,30 +9,44 @@ import {
   ReviewList,
   ReviewListItem,
   Wrapper,
-} from './Reviews.styled'; 
+} from './Reviews.styled';
 
 const Reviews = () => {
-  const { movieId } = useParams(); 
-  const [reviews, setReviews] = useState([]); 
+  const { movieId } = useParams();
+  const [reviews, setReviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
+      setIsLoading(true);
+
       try {
         const { results } = await fetchMovieReviews(movieId);
         setReviews(results);
+        setIsLoading(false);
       } catch (error) {
-        console.log(error);
+        setError(error);
+        setIsLoading(false);
       }
     };
 
     fetchReviews();
   }, [movieId]);
 
+  if (isLoading) {
+    return <div>Loading reviews...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <Wrapper>
       <ReviewHeader>Reviews</ReviewHeader>
 
-      {reviews.length ? (
+      {reviews.length > 0 ? (
         <ReviewList className="reviews-container">
           {reviews.map(review => (
             <ReviewListItem className="review-card" key={review.id}>
@@ -49,5 +63,5 @@ const Reviews = () => {
     </Wrapper>
   );
 };
-export default Reviews;
 
+export default Reviews;
