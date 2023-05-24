@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fetchTrendMovies } from '../services/api';
-import MovieList from 'components/MovieList/MovieList';
+import TrendingMoviesList from 'components/MovieList/TrendingMoviesList';
 import { LoadingIndicator } from 'components/SharedLayout/LoadingDots';
 
 const Home = () => {
@@ -34,11 +34,10 @@ const Home = () => {
           Sorry, we could not fetch the trending movies. Please try again later.
         </p>
       ) : (
-        <MovieList trendingMovies={trendingMovies} />
+        <TrendingMoviesList trendingMovies={trendingMovies} />
       )}
     </>
   );
 };
 
 export default Home;
-
