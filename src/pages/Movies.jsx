@@ -12,52 +12,36 @@ import {
 } from '../components/MovieList/MovieList.styled';
 
 const Movies = () => {
-  const [movies, setMovies] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const query = searchParams.get('query') ?? '';
     if (!query) return;
 
-    const getMovie = async () => {
-      setIsLoading(true);
-
+    const getMovies = async () => {
       try {
         const { results } = await fetchMovieByName(query);
 
         if (results.length === 0) {
           toast.dismiss();
           toast.error('No movies found');
-          setMovies([]);
-        } else {
-          setMovies(results);
         }
-      } catch (error) {
-        setError(error);
-        toast.error(error.message);
-        setMovies([]);
-      }
 
-      setIsLoading(false);
+        setSearchResults(results);
+      } catch (error) {
+        toast.error(error.message);
+        setSearchResults([]);
+      }
     };
 
-    getMovie();
+    getMovies();
   }, [searchParams]);
 
   const handleSubmit = query => {
     setSearchParams({ query });
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
 
   return (
     <main>
@@ -67,7 +51,7 @@ const Movies = () => {
         <SearchMovies onSubmit={handleSubmit} />
 
         <List>
-          {movies.map(movie => (
+          {searchResults.map(movie => (
             <ListItem key={movie.id}>
               <StyledLink to={`/movies/${movie.id}`} state={{ from: location }}>
                 {movie.title}

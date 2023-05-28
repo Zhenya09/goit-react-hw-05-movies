@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchMovieCast } from '../../services/api';
 import {
@@ -34,19 +34,15 @@ const Cast = () => {
     fetchCast();
   }, [movieId]);
 
-  if (isLoading) {
-    return <div>Loading cast...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
   return (
     <Wrapper>
       <CastHeader>Cast</CastHeader>
 
-      {cast.length > 0 ? (
+      {isLoading ? (
+        <div>Loading cast...</div>
+      ) : error ? (
+        <div>Error: {error.message}</div>
+      ) : cast.length > 0 ? (
         <CastList>
           {cast.map(actor => (
             <CastListItem className="cast-card" key={actor.id}>

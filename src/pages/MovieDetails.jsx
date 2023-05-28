@@ -15,7 +15,7 @@ const MovieDelails = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchSelectedMovie = async movieId => {
+    const fetchSelectedMovie = async (movieId) => {
       try {
         const movieData = await fetchMovieById(movieId);
         setSelectedMovie(movieData);
@@ -29,31 +29,31 @@ const MovieDelails = () => {
     fetchSelectedMovie(movieId);
   }, [movieId]);
 
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
   return (
     <main>
       <Container>
-        <Link to={location?.state?.from ?? '/'}>
-          <Button type="button">
-            <BsArrowLeftShort
-              style={{ width: '25px', height: '25px', display: 'inline-block' }}
-            />
-            Go back
-          </Button>
-        </Link>
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : error ? (
+          <div>Error: {error.message}</div>
+        ) : (
+          <>
+            <Link to={location?.state?.from ?? '/'}>
+              <Button type="button">
+                <BsArrowLeftShort
+                  style={{ width: '25px', height: '25px', display: 'inline-block' }}
+                />
+                Go back
+              </Button>
+            </Link>
 
-        <MovieCard movie={selectedMovie} />
+            {selectedMovie && <MovieCard movie={selectedMovie} />}
 
-        <Suspense fallback={<LoadingIndicator />}>
-          <Outlet />
-        </Suspense>
+            <Suspense fallback={<LoadingIndicator />}>
+              <Outlet />
+            </Suspense>
+          </>
+        )}
       </Container>
     </main>
   );

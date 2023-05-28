@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   StyledSection,
@@ -7,16 +8,16 @@ import {
   ListItem,
 } from './MovieList.styled';
 
-const MovieList = ({ trendingMovies }) => {
+const MovieList = ({ movies }) => {
   return (
     <StyledSection>
       <SectionTitle>Trending today</SectionTitle>
 
       <List>
-        {trendingMovies.map(trendingMovie => (
-          <ListItem key={trendingMovie.id}>
-            <StyledLink to={`/movies/${trendingMovie.id}`}>
-              {trendingMovie.title}
+        {movies.map(movie => (
+          <ListItem key={movie.id}>
+            <StyledLink to={`/movies/${movie.id}`}>
+              {movie.title}
             </StyledLink>
           </ListItem>
         ))}
@@ -26,11 +27,14 @@ const MovieList = ({ trendingMovies }) => {
 };
 
 MovieList.propTypes = {
-  trendingMovies: PropTypes.arrayOf(
+  movies: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      title: PropTypes.string,
-      original_title: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      release_date: PropTypes.string.isRequired,
+      overview: PropTypes.string.isRequired,
+      poster_path: PropTypes.string,
+      vote_average: PropTypes.number.isRequired,
     })
   ).isRequired,
 };

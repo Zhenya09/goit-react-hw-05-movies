@@ -34,19 +34,15 @@ const Reviews = () => {
     fetchReviews();
   }, [movieId]);
 
-  if (isLoading) {
-    return <div>Loading reviews...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
   return (
     <Wrapper>
       <ReviewHeader>Reviews</ReviewHeader>
 
-      {reviews.length > 0 ? (
+      {isLoading ? (
+        <div>Loading reviews...</div>
+      ) : error ? (
+        <div>Error: {error.message}</div>
+      ) : reviews.length > 0 ? (
         <ReviewList className="reviews-container">
           {reviews.map(review => (
             <ReviewListItem className="review-card" key={review.id}>

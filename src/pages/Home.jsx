@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchTrendMovies } from '../services/api';
-import TrendingMoviesList from 'components/MovieList/TrendingMoviesList';
-import { LoadingIndicator } from 'components/SharedLayout/LoadingDots';
+import MovieList from '../components/MovieList/MovieList';
+import { LoadingIndicator } from '../components/SharedLayout/LoadingDots';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -27,15 +27,11 @@ const Home = () => {
 
   return (
     <>
-      {isLoading ? (
-        <LoadingIndicator />
-      ) : error ? (
-        <p>
-          Sorry, we could not fetch the trending movies. Please try again later.
-        </p>
-      ) : (
-        <TrendingMoviesList trendingMovies={trendingMovies} />
+      {isLoading && <LoadingIndicator />}
+      {!isLoading && error && (
+        <p>Sorry, we could not fetch the trending movies. Please try again later.</p>
       )}
+      {!isLoading && !error && <MovieList movies={trendingMovies} />}
     </>
   );
 };
