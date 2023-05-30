@@ -33,9 +33,9 @@ const MovieCard = ({ movie }) => {
     ? `${(vote_average * 10).toFixed(0)}%`
     : 'Not rated yet';
 
-  if (!title) {
-    return <LoadingIndicator />;
-  }
+  if (!movie || !movie.title || !movie.release_date || !movie.poster_path) {
+  return <LoadingIndicator />;
+}
 
   return (
     <>
@@ -50,13 +50,13 @@ const MovieCard = ({ movie }) => {
           <MovieInfoText>
             <MovieInfoTextBold>Overview:</MovieInfoTextBold> {overview}
           </MovieInfoText>
-
+          
           {genres && genres.length > 0 && (
-            <MovieInfoText>
-              <MovieInfoTextBold>Genres:</MovieInfoTextBold>
-              {genres.map(genre => genre.name).join(', ')}
-            </MovieInfoText>
-          )}
+  <MovieInfoText>
+    <MovieInfoTextBold>Genres:</MovieInfoTextBold>
+    {genres.map(genre => genre.name).join(', ')}
+  </MovieInfoText>
+)}
         </MovieInfo>
 
       </MovieCardContainer>
@@ -91,13 +91,13 @@ const MovieCard = ({ movie }) => {
 
 MovieCard.propTypes = {
   movie: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    release_date: PropTypes.string.isRequired,
-    poster_path: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    release_date: PropTypes.string,
+    poster_path: PropTypes.string,
     vote_average: PropTypes.number,
     overview: PropTypes.string,
     genres: PropTypes.arrayOf(
-      PropTypes.shape({ name: PropTypes.string.isRequired })
+      PropTypes.shape({ name: PropTypes.string })
     ),
   }).isRequired,
 };

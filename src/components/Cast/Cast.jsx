@@ -10,6 +10,7 @@ import {
   NoCastText,
   Wrapper,
 } from './Cast.styled';
+import { LoadingIndicator } from 'components/SharedLayout/LoadingDots';
 
 const Cast = () => {
   const { movieId } = useParams();
@@ -39,24 +40,21 @@ const Cast = () => {
       <CastHeader>Cast</CastHeader>
 
       {isLoading ? (
-        <div>Loading cast...</div>
+        <LoadingIndicator />
       ) : error ? (
         <div>Error: {error.message}</div>
       ) : cast.length > 0 ? (
         <CastList>
           {cast.map(actor => (
             <CastListItem className="cast-card" key={actor.id}>
-              {actor.profile_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
-                  alt={`${actor.name} profile`}
-                />
-              ) : (
-                <img
-                  src={`https://via.placeholder.com/200x300?text=No+Image`}
-                  alt={`${actor.name} profile`}
-                />
-              )}
+              <img
+                src={
+                  actor.profile_path
+                    ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
+                    : 'https://via.placeholder.com/200x300?text=No+Image'
+                }
+                alt={`${actor.name} profile`}
+              />
 
               <CastInfo>
                 <CastName>{actor.name}</CastName>

@@ -1,5 +1,4 @@
-import { Suspense } from 'react';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useParams, Outlet, useLocation, Link } from 'react-router-dom';
 import { BsArrowLeftShort } from 'react-icons/bs';
 import { fetchMovieById } from '../services/api';
@@ -11,17 +10,18 @@ const MovieDelails = () => {
   const { movieId } = useParams();
   const location = useLocation();
   const [selectedMovie, setSelectedMovie] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSelectedMovie = async (movieId) => {
       try {
+        setIsLoading(true);
         const movieData = await fetchMovieById(movieId);
         setSelectedMovie(movieData);
-        setIsLoading(false);
       } catch (error) {
         setError(error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -32,11 +32,9 @@ const MovieDelails = () => {
   return (
     <main>
       <Container>
-        {isLoading ? (
-          <LoadingIndicator />
-        ) : error ? (
-          <div>Error: {error.message}</div>
-        ) : (
+        {isLoading && <LoadingIndicator />}
+        {error && <div>Error: {error.message}</div>}
+        {!isLoading && !error && (
           <>
             <Link to={location?.state?.from ?? '/'}>
               <Button type="button">

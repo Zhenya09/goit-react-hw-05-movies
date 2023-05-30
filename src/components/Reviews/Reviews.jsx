@@ -10,6 +10,7 @@ import {
   ReviewListItem,
   Wrapper,
 } from './Reviews.styled';
+import { LoadingIndicator } from 'components/SharedLayout/LoadingDots';
 
 const Reviews = () => {
   const { movieId } = useParams();
@@ -39,7 +40,7 @@ const Reviews = () => {
       <ReviewHeader>Reviews</ReviewHeader>
 
       {isLoading ? (
-        <div>Loading reviews...</div>
+        <LoadingIndicator />
       ) : error ? (
         <div>Error: {error.message}</div>
       ) : reviews.length > 0 ? (

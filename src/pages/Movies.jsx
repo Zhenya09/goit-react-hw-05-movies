@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { fetchMovieByName } from '../services/api';
 import SearchMovies from '../components/SearchMovies/SearchMovies';
 import {
-  List,
-  ListItem,
   SectionTitle,
-  StyledLink,
   StyledSection,
 } from '../components/MovieList/MovieList.styled';
+import { LoadingIndicator } from 'components/SharedLayout/LoadingDots';
+import MovieList from '../components/MovieList/MovieList';
 
 const Movies = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
+  // const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error] = useState(null);
 
   useEffect(() => {
     const query = searchParams.get('query') ?? '';
@@ -22,6 +23,7 @@ const Movies = () => {
 
     const getMovies = async () => {
       try {
+        setIsLoading(true);
         const { results } = await fetchMovieByName(query);
 
         if (results.length === 0) {
@@ -33,6 +35,8 @@ const Movies = () => {
       } catch (error) {
         toast.error(error.message);
         setSearchResults([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -50,15 +54,11 @@ const Movies = () => {
 
         <SearchMovies onSubmit={handleSubmit} />
 
-        <List>
-          {searchResults.map(movie => (
-            <ListItem key={movie.id}>
-              <StyledLink to={`/movies/${movie.id}`} state={{ from: location }}>
-                {movie.title}
-              </StyledLink>
-            </ListItem>
-          ))}
-        </List>
+        {isLoading && <LoadingIndicator />}
+        {error && (
+          <p>Sorry, we could not fetch the trending movies. Please try again later.</p>
+        )}
+        {searchResults.length !== 0 && <MovieList movies={searchResults} />}
       </StyledSection>
     </main>
   );

@@ -5,18 +5,17 @@ import { LoadingIndicator } from '../components/SharedLayout/LoadingDots';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
       try {
-        setError(false);
         setIsLoading(true);
         const { results } = await fetchTrendMovies();
         setTrendingMovies(results);
       } catch (error) {
-        setError(true);
+        setError(error);
       } finally {
         setIsLoading(false);
       }
@@ -28,10 +27,10 @@ const Home = () => {
   return (
     <>
       {isLoading && <LoadingIndicator />}
-      {!isLoading && error && (
+      {error && (
         <p>Sorry, we could not fetch the trending movies. Please try again later.</p>
       )}
-      {!isLoading && !error && <MovieList movies={trendingMovies} />}
+      {trendingMovies.length !== 0 && <MovieList movies={trendingMovies} />}
     </>
   );
 };
